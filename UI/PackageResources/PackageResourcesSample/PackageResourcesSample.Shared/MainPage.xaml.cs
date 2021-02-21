@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
+using SkiaSharp;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -35,7 +36,7 @@ namespace PackageResourcesSample
             var o = new ToggleSwitch { FlowDirection = FlowDirection.RightToLeft };
         }
 
-        private async void LoadPackageFile()
+        public async Task LoadPackageFile()
         {
             try
             {
@@ -43,7 +44,7 @@ namespace PackageResourcesSample
                 var bytes = await FileIO.ReadBufferAsync(file);
                 var stream = bytes.AsStream();
                 await ExtractExtraFileFolder(stream);
-
+                
                 output.Text = await FileIO.ReadTextAsync(file);
             }
             catch (Exception e)
@@ -99,6 +100,9 @@ namespace PackageResourcesSample
 
                         zipInStream.Read(buffer, 0, buffer.Length);
                         File.WriteAllBytes(outputFile, buffer);
+                        var bitmap = SKBitmap.Decode(buffer);
+                        Console.WriteLine(bitmap.ByteCount);
+                        Console.WriteLine(bitmap.Height);
                         //SKBitmap bitmap = SKBitmap.Decode(buffer);
                         //Console.WriteLine(bitmap.ByteCount);
                     }
@@ -111,6 +115,11 @@ namespace PackageResourcesSample
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadPackageFile();
         }
     }
 }

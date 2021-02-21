@@ -5,6 +5,7 @@
     xmlns:local="using:PackageResourcesSample"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:SkiaSharp.Views.UWP"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -14,7 +15,7 @@
 		</Grid.RowDefinitions>
 		<StackPanel>
 			<TextBox Header="Package asset file name" Text="ms-appx:///Assets/MyPackageAsset.txt" x:Name="assetFileName" />
-			<Button Content="Load" Click="{x:Bind LoadPackageFile}" />
+            <Button Content="Load" Click="Button_Click"/>
 		</StackPanel>
 		<TextBlock Grid.Row="1" x:Name="output"/>
 	</Grid>
