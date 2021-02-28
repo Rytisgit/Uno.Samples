@@ -137,9 +137,6 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +153,12 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Properties\Default.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\DCSSReplay\FrameGenerator\FrameGenerator.csproj">
+      <Project>{35fb4157-e6e9-45e0-b0ce-92b02be3236d}</Project>
+      <Name>FrameGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems" Label="Shared" Condition="Exists('..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems')" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

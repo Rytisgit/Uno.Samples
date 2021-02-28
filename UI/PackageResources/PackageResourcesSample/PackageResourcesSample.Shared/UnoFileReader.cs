@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.Storage;
 using FrameGenerator.FileReading;
 using FrameGenerator.Models;
 using SkiaSharp;
@@ -15,12 +17,23 @@ namespace PackageResourcesSample.Shared
         {
             var dict = new Dictionary<string, string>();
 
-            string[] lines = File.ReadAllLines(path);
+            //var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            //Console.WriteLine(localFolder.Path);
+            ////var folders = await localFolder.GetFoldersAsync();
+            //foreach (var storageFolder in folders)
+            //{
+            //    foreach (var storageFile in await storageFolder.GetFilesAsync())
+            //    {
+            //        Console.WriteLine(storageFile.Name);
+            //    }
+            //}
 
-            for (var i = 0; i < lines.Length; i += 2)
-            {
-                dict[lines[i]] = lines[i + 1];
-            }
+            //string[] lines = FileIO.ReadLinesAsync().GetResults();
+
+            //for (var i = 0; i < lines.Length; i += 2)
+            //{
+            //    dict[lines[i]] = lines[i + 1];
+            //}
 
             return dict;
         }

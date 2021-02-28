@@ -85,11 +85,11 @@ namespace PackageResourcesSample
                 var entry = zipInStream.GetNextEntry();
                 while (entry != null && entry.CanDecompress)
                 {
-                    var outputFile = Path.Combine(localFolder.Path, entry.Name);
+                    var outputFile = Path.Combine(folder.Path, entry.Name);
 
                     var outputDirectory = Path.GetDirectoryName(outputFile);
                     //Console.WriteLine(outputDirectory);
-                    var correctFolder = await localFolder.CreateFolderAsync(outputDirectory, CreationCollisionOption.OpenIfExists);
+                    var correctFolder = await folder.CreateFolderAsync(outputDirectory, CreationCollisionOption.OpenIfExists);
 
 
                     if (entry.IsFile)
@@ -121,13 +121,14 @@ namespace PackageResourcesSample
             try
             {
                 var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-                Console.WriteLine(localFolder.Path);
-                var folders = await localFolder.GetFoldersAsync();
+                var folder = await localFolder.GetFolderAsync("Extra");
+                Console.WriteLine(folder.Path);
+                var folders = await folder.GetFoldersAsync();
                 foreach (var storageFolder in folders)
                 {
                     foreach (var storageFile in await storageFolder.GetFilesAsync())
                     {
-                        Console.WriteLine(storageFile.OpenAsync(FileAccessMode.Read));
+                        Console.WriteLine(storageFile.Name);
                     }
                 }
 
