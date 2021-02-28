@@ -44,7 +44,7 @@ namespace PackageResourcesSample
                 var bytes = await FileIO.ReadBufferAsync(file);
                 var stream = bytes.AsStream();
                 await ExtractExtraFileFolder(stream);
-                
+                await ReadExtraFileFolder("vault");
                 output.Text = await FileIO.ReadTextAsync(file);
             }
             catch (Exception e)
@@ -88,7 +88,7 @@ namespace PackageResourcesSample
                     var outputFile = Path.Combine(localFolder.Path, entry.Name);
 
                     var outputDirectory = Path.GetDirectoryName(outputFile);
-                    Console.WriteLine(outputDirectory);
+                    //Console.WriteLine(outputDirectory);
                     var correctFolder = await localFolder.CreateFolderAsync(outputDirectory, CreationCollisionOption.OpenIfExists);
 
 
@@ -101,8 +101,8 @@ namespace PackageResourcesSample
                         zipInStream.Read(buffer, 0, buffer.Length);
                         File.WriteAllBytes(outputFile, buffer);
                         var bitmap = SKBitmap.Decode(buffer);
-                        Console.WriteLine(bitmap.ByteCount);
-                        Console.WriteLine(bitmap.Height);
+                        ////Console.WriteLine(bitmap.ByteCount);
+                        //Console.WriteLine(bitmap.Height);
                         //SKBitmap bitmap = SKBitmap.Decode(buffer);
                         //Console.WriteLine(bitmap.ByteCount);
                     }
@@ -110,6 +110,27 @@ namespace PackageResourcesSample
                     entry = zipInStream.GetNextEntry();
                 }
                 zipInStream.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        private async Task ReadExtraFileFolder(string foldername)
+        {
+            try
+            {
+                var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                Console.WriteLine(localFolder.Path);
+                var folders = await localFolder.GetFoldersAsync();
+                foreach (var storageFolder in folders)
+                {
+                    foreach (var storageFile in await storageFolder.GetFilesAsync())
+                    {
+                        Console.WriteLine(storageFile.OpenAsync(FileAccessMode.Read));
+                    }
+                }
+
             }
             catch (Exception e)
             {

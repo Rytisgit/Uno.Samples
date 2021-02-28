@@ -11,6 +11,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PackageResourcesSample.Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageResourcesSample.UWP", "PackageResourcesSample.UWP\PackageResourcesSample.UWP.csproj", "{EA203186-9205-46FA-9BBD-99FCA8E20247}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageGeneration", "ImageGeneration", "{6B49591B-12AF-4E8A-BBD4-487699704EB1}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems*{321562de-1c0e-4275-931d-d3bbc5837f06}*SharedItemsImports = 5
@@ -39,6 +41,13 @@ Global
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		LinuxRelease|Any CPU = LinuxRelease|Any CPU
+		LinuxRelease|ARM = LinuxRelease|ARM
+		LinuxRelease|ARM64 = LinuxRelease|ARM64
+		LinuxRelease|iPhone = LinuxRelease|iPhone
+		LinuxRelease|iPhoneSimulator = LinuxRelease|iPhoneSimulator
+		LinuxRelease|x64 = LinuxRelease|x64
+		LinuxRelease|x86 = LinuxRelease|x86
 		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
@@ -90,6 +99,20 @@ Global
 		{321562DE-1C0E-4275-931D-D3BBC5837F06}.Debug|x64.Build.0 = Debug|Any CPU
 		{321562DE-1C0E-4275-931D-D3BBC5837F06}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{321562DE-1C0E-4275-931D-D3BBC5837F06}.Debug|x86.Build.0 = Debug|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|Any CPU.Build.0 = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|ARM.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|ARM.Build.0 = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|ARM64.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|ARM64.Build.0 = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|iPhone.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|iPhone.Build.0 = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|iPhoneSimulator.Build.0 = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|x64.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|x64.Build.0 = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|x86.ActiveCfg = Release|Any CPU
+		{321562DE-1C0E-4275-931D-D3BBC5837F06}.LinuxRelease|x86.Build.0 = Release|Any CPU
 		{321562DE-1C0E-4275-931D-D3BBC5837F06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{321562DE-1C0E-4275-931D-D3BBC5837F06}.Release|Any CPU.Build.0 = Release|Any CPU
 		{321562DE-1C0E-4275-931D-D3BBC5837F06}.Release|ARM.ActiveCfg = Release|Any CPU
@@ -161,6 +184,27 @@ Global
 		{EA203186-9205-46FA-9BBD-99FCA8E20247}.Debug|x86.ActiveCfg = Debug|x86
 		{EA203186-9205-46FA-9BBD-99FCA8E20247}.Debug|x86.Build.0 = Debug|x86
 		{EA203186-9205-46FA-9BBD-99FCA8E20247}.Debug|x86.Deploy.0 = Debug|x86
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|Any CPU.ActiveCfg = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|Any CPU.Build.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|Any CPU.Deploy.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|ARM.ActiveCfg = Release|ARM
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|ARM.Build.0 = Release|ARM
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|ARM.Deploy.0 = Release|ARM
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|ARM64.ActiveCfg = Release|ARM64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|ARM64.Build.0 = Release|ARM64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|ARM64.Deploy.0 = Release|ARM64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|iPhone.ActiveCfg = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|iPhone.Build.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|iPhone.Deploy.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|iPhoneSimulator.ActiveCfg = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|iPhoneSimulator.Build.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|iPhoneSimulator.Deploy.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|x64.ActiveCfg = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|x64.Build.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|x64.Deploy.0 = Release|x64
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|x86.ActiveCfg = Release|x86
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|x86.Build.0 = Release|x86
+		{EA203186-9205-46FA-9BBD-99FCA8E20247}.LinuxRelease|x86.Deploy.0 = Release|x86
 		{EA203186-9205-46FA-9BBD-99FCA8E20247}.Release|Any CPU.ActiveCfg = Release|x86
 		{EA203186-9205-46FA-9BBD-99FCA8E20247}.Release|ARM.ActiveCfg = Release|ARM
 		{EA203186-9205-46FA-9BBD-99FCA8E20247}.Release|ARM.Build.0 = Release|ARM
