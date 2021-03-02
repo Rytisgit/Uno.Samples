@@ -21,10 +21,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\BitmapRender.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\SampleBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\SamplesInitializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\SamplesManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UnoFileReader.cs" />
   </ItemGroup>
   <ItemGroup>
