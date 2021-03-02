@@ -160,6 +160,9 @@
       <Name>FrameGenerator</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PuttySharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  </ItemGroup>
   <Import Project="..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems" Label="Shared" Condition="Exists('..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems')" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

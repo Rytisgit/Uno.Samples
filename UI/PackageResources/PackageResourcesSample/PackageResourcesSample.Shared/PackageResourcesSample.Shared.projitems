@@ -30,6 +30,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Extra.zip" />
     <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\vault.zip" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\wall.zip" />

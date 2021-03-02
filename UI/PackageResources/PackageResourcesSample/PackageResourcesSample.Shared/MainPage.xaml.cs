@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -16,8 +18,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using FrameGenerator;
 using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
+using PackageResourcesSample.Shared;
 using SkiaSharp;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -40,12 +44,15 @@ namespace PackageResourcesSample
         {
             try
             {
-                var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri(assetFileName.Text));
-                var bytes = await FileIO.ReadBufferAsync(file);
-                var stream = bytes.AsStream();
-                await ExtractExtraFileFolder(stream);
-                await ReadExtraFileFolder("vault");
-                output.Text = await FileIO.ReadTextAsync(file);
+                //var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri(assetFileName.Text));
+                //var bytes = await FileIO.ReadBufferAsync(file);
+                //var stream = bytes.AsStream();
+                //await ExtractExtraFileFolder(stream);
+                //output.Text = await FileIO.ReadTextAsync(file);
+
+                var generator = new MainGenerator(new UnoFileReader(), 69);
+                await generator.InitialiseGenerator();
+                output.Text = $"{generator.GenerateImage(null).Height}";
             }
             catch (Exception e)
             {
@@ -53,24 +60,7 @@ namespace PackageResourcesSample
             }
         }
 
-        //public static Dictionary<string, SkiaSharp.SKBitmap> GetCharacterPNG(string gameLocation)
-        //{
-
-        //    var GetCharacterPNG = new Dictionary<string, SkiaSharp.SKBitmap>();
-
-        //    List<string> allpngfiles = Directory.GetFiles(gameLocation + @"/rltiles/player/base", "*.png*", SearchOption.AllDirectories).ToList();
-        //    allpngfiles.AddRange(Directory.GetFiles(gameLocation + @"/rltiles/player/felids", "*.png*", SearchOption.AllDirectories).ToList());
-        //    foreach (var file in allpngfiles)
-        //    {
-        //        FileInfo info = new FileInfo(file);
-        //        SkiaSharp.SKBitmap SKBitmap = SKBitmap.Decode(file);
-
-
-        //        GetCharacterPNG[info.Name.Replace(".png", "")] = SKBitmap;
-
-        //    }
-        //    return GetCharacterPNG;
-        //}
+        
 
         private async Task ExtractExtraFileFolder(Stream stream)
         {
@@ -97,10 +87,10 @@ namespace PackageResourcesSample
 
                         int size;
                         byte[] buffer = new byte[zipInStream.Length];
-
+                        //Debug.WriteLine(buffer.Length);
                         zipInStream.Read(buffer, 0, buffer.Length);
                         File.WriteAllBytes(outputFile, buffer);
-                        var bitmap = SKBitmap.Decode(buffer);
+                        //var bitmap = SKBitmap.Decode(buffer);
                         ////Console.WriteLine(bitmap.ByteCount);
                         //Console.WriteLine(bitmap.Height);
                         //SKBitmap bitmap = SKBitmap.Decode(buffer);
@@ -116,27 +106,31 @@ namespace PackageResourcesSample
                 Console.WriteLine(e);
             }
         }
-        private async Task ReadExtraFileFolder(string foldername)
+        private async Task<List<StorageFile>> GetFilesFromFolderAndSubfolders(string foldername)
         {
+            var files = new List<StorageFile>();
             try
             {
+                
                 var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-                var folder = await localFolder.GetFolderAsync("Extra");
-                Console.WriteLine(folder.Path);
-                var folders = await folder.GetFoldersAsync();
-                foreach (var storageFolder in folders)
-                {
-                    foreach (var storageFile in await storageFolder.GetFilesAsync())
-                    {
-                        Console.WriteLine(storageFile.Name);
-                    }
-                }
+                var folder = await localFolder.GetFolderAsync(foldername);
+                Debug.WriteLine(folder.Path);
+                
+                files.AddRange((await folder.GetFilesAsync()).Where(file => file.Name.EndsWith("png",true,CultureInfo.InvariantCulture)));
 
+                var subFolders = await folder.GetFoldersAsync();
+                foreach (var subFolder in subFolders)
+                {
+                    files.AddRange((await subFolder.GetFilesAsync()).Where(file => file.Name.EndsWith("png", true, CultureInfo.InvariantCulture)));
+                }
+                Debug.WriteLine($"loaded {files.Count} files from {foldername}");
+                
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
+            return files;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

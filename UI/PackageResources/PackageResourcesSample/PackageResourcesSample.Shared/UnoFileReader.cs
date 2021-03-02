@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -11,44 +14,93 @@ using SkiaSharp;
 
 namespace PackageResourcesSample.Shared
 {
-    class UnoFileReader : IReadFromFile
+    class UnoFileReader : IReadFromFileAsync
     {
-        public Dictionary<string, string> GetDictionaryFromFile(string path)
+        public async Task<List<StorageFile>> GetFilesFromFolderAndSubfolders(string foldername)
         {
+            var files = new List<StorageFile>();
+            try
+            {
+
+                var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                var folder = await localFolder.GetFolderAsync(foldername);
+                Debug.WriteLine(folder.Path);
+
+                files.AddRange((await folder.GetFilesAsync()).Where(file => file.Name.EndsWith("png", true, CultureInfo.InvariantCulture)));
+
+                var subFolders = await folder.GetFoldersAsync();
+                foreach (var subFolder in subFolders)
+                {
+                    files.AddRange((await subFolder.GetFilesAsync()).Where(file => file.Name.EndsWith("png", true, CultureInfo.InvariantCulture)));
+                }
+                Debug.WriteLine($"loaded {files.Count} files from {foldername}");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return files;
+        }
+
+        public async Task<List<StorageFile>> GetFilesFromFolder(string foldername)
+        {
+            var files = new List<StorageFile>();
+            try
+            {
+
+                var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                var folder = await localFolder.GetFolderAsync(foldername);
+                Debug.WriteLine(folder.Path);
+
+                files.AddRange((await folder.GetFilesAsync()).Where(file => file.Name.EndsWith("png", true, CultureInfo.InvariantCulture)));
+
+                Debug.WriteLine($"loaded {files.Count} files from {foldername}");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return files;
+        }
+
+
+        public async Task<Dictionary<string, string>> GetDictionaryFromFile(string path)
+        {
+            var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            var file = await localFolder.GetFileAsync(path);
+            Debug.WriteLine(file.Path);
+
+            var lines = await FileIO.ReadLinesAsync(file);
+            var lineArray = lines.ToArray();
+
             var dict = new Dictionary<string, string>();
 
-            //var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            //Console.WriteLine(localFolder.Path);
-            ////var folders = await localFolder.GetFoldersAsync();
-            //foreach (var storageFolder in folders)
-            //{
-            //    foreach (var storageFile in await storageFolder.GetFilesAsync())
-            //    {
-            //        Console.WriteLine(storageFile.Name);
-            //    }
-            //}
-
-            //string[] lines = FileIO.ReadLinesAsync().GetResults();
-
-            //for (var i = 0; i < lines.Length; i += 2)
-            //{
-            //    dict[lines[i]] = lines[i + 1];
-            //}
+            for (var i = 0; i < lineArray.ToArray().Length; i += 2)
+            {
+                dict[lineArray[i]] = lineArray[i + 1];
+            }
 
             return dict;
         }
 
-        public Dictionary<string, string> GetMonsterData(string file, string monsterOverrideFile)
+        public async Task<Dictionary<string, string>> GetMonsterData(string filename, string monsterOverrideFile)
         {
             var monster = new Dictionary<string, string>();
 
-            string[] lines = File.ReadAllLines(file);
+            var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            var file = await localFolder.GetFileAsync(filename);
+            Debug.WriteLine(file.Path);
 
-            for (var i = 0; i < lines.Length; i++)
+            var liness = await FileIO.ReadLinesAsync(file);
+            var lines = liness.ToArray();
+
+            foreach (var line in lines)
             {
-                if (lines[i].Contains("  MONS_"))
+                if (line.Contains("  MONS_"))
                 {
-                    string[] tokens = lines[i].Split(',');
+                    string[] tokens = line.Split(',');
                     tokens[1] = tokens[1].Replace("'", "").Replace(" ", "");
                     tokens[2] = tokens[2].Replace(" ", "");
                     tokens[0] = tokens[0].Replace("MONS_", "").Replace(" ", "").ToLower();
@@ -63,7 +115,11 @@ namespace PackageResourcesSample.Shared
 
             //Overrides for duplicates, others handled by name from monster log
 
-            lines = File.ReadAllLines(monsterOverrideFile);
+            file = await localFolder.GetFileAsync(monsterOverrideFile);
+            Debug.WriteLine(file.Path);
+
+            liness = await FileIO.ReadLinesAsync(file);
+            lines = liness.ToArray();
 
             foreach (var line in lines)
             {
@@ -75,25 +131,23 @@ namespace PackageResourcesSample.Shared
             return monster;
         }
 
-        public Dictionary<string, string> GetWeaponData(string file)
+        public Task<Dictionary<string, string>> GetWeaponData(string file)
         {
             var weapon = new Dictionary<string, string>();
-
-            string[] lines = File.ReadAllLines(file);
-
-            for (var i = 0; i < lines.Length; i += 2)
-            {
-                weapon[lines[i]] = lines[i + 1];
-            }
-
-            return weapon;
+            return null;
         }
 
-        public List<NamedMonsterOverride> GetNamedMonsterOverrideData(string monsterOverrideFile)
+
+        public async  Task<List<NamedMonsterOverride>> GetNamedMonsterOverrideData(string monsterOverrideFile)
         {
             var monster = new List<NamedMonsterOverride>();
 
-            string[] lines = File.ReadAllLines(monsterOverrideFile);
+            var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            var file = await localFolder.GetFileAsync(monsterOverrideFile);
+            Debug.WriteLine(file.Path);
+
+            var liness = await FileIO.ReadLinesAsync(file);
+            var lines = liness.ToArray();
 
             var name = "";
             var location = "";
@@ -130,10 +184,16 @@ namespace PackageResourcesSample.Shared
             return monster;
         }
 
-        public Dictionary<string, string[]> GetFloorAndWallNamesForDungeons(string file)
+
+        public async Task<Dictionary<string, string[]>> GetFloorAndWallNamesForDungeons(string filename)
         {
             var floorandwall = new Dictionary<string, string[]>();
-            string[] lines = File.ReadAllLines(file);
+            var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            var file = await localFolder.GetFileAsync(filename);
+            Debug.WriteLine(file.Path);
+
+            var liness = await FileIO.ReadLinesAsync(file);
+            var lines = liness.ToArray();
 
             for (var i = 0; i < lines.Length; i += 3)
             {
@@ -146,74 +206,72 @@ namespace PackageResourcesSample.Shared
             return floorandwall;
         }
 
-        public Dictionary<string, SkiaSharp.SKBitmap> GetSKBitmapDictionaryFromFolder(string folder)
+        public async Task<Dictionary<string, SkiaSharp.SKBitmap>> GetSKBitmapDictionaryFromFolder(string folder)
         {
             var dict = new Dictionary<string, SkiaSharp.SKBitmap>();
-            List<string> pngFiles = Directory.GetFiles(folder, "*.png*", SearchOption.AllDirectories).ToList();
-            var files = Directory
-                .GetFiles(folder.Substring(0, folder.IndexOf("Extra", StringComparison.OrdinalIgnoreCase) + 5), "*.png",
-                    SearchOption.TopDirectoryOnly).ToList();
+            List<StorageFile> pngFiles = await GetFilesFromFolderAndSubfolders(folder);
+            //Add pngs in Extra folder
+            var files = await GetFilesFromFolder("Extra");
             pngFiles.AddRange(files);
+
             foreach (var file in pngFiles)
             {
-                FileInfo info = new FileInfo(file);
-                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(file);
-                dict[info.Name.Replace(".png", "")] = SKBitmap;
+                var buffer = await FileIO.ReadBufferAsync(file);
+                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(buffer.AsStream());
+
+                dict[file.Name.Replace(".png", "")] = SKBitmap;
             }
 
             return dict;
         }
 
-        public Dictionary<string, SkiaSharp.SKBitmap> GetCharacterPNG(string gameLocation)
+        
+        public async Task<Dictionary<string, SkiaSharp.SKBitmap>> GetCharacterPNG(string gameLocation)
         {
+
             var GetCharacterPNG = new Dictionary<string, SkiaSharp.SKBitmap>();
 
-            List<string> allpngfiles = Directory
-                .GetFiles(gameLocation + @"/rltiles/player/base", "*.png*", SearchOption.AllDirectories).ToList();
-            allpngfiles.AddRange(Directory
-                .GetFiles(gameLocation + @"/rltiles/player/felids", "*.png*", SearchOption.AllDirectories).ToList());
+            List<StorageFile> allpngfiles = await GetFilesFromFolderAndSubfolders(Path.Combine(gameLocation, "rltiles", "player", "base"));
+            allpngfiles.AddRange(await GetFilesFromFolderAndSubfolders(Path.Combine(gameLocation, "rltiles", "player", "felids")));
             foreach (var file in allpngfiles)
             {
-                FileInfo info = new FileInfo(file);
-                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(file);
+                var buffer = await FileIO.ReadBufferAsync(file);
+                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(buffer.AsStream());
 
+                GetCharacterPNG[file.Name.Replace(".png", "")] = SKBitmap;
 
-                GetCharacterPNG[info.Name.Replace(".png", "")] = SKBitmap;
             }
-
             return GetCharacterPNG;
         }
 
-        public Dictionary<string, SkiaSharp.SKBitmap> GetMonsterPNG(string gameLocation)
+        public async Task<Dictionary<string, SkiaSharp.SKBitmap>> GetMonsterPNG(string gameLocation)
         {
             var monsterPNG = new Dictionary<string, SkiaSharp.SKBitmap>();
-            string[] allpngfiles =
-                Directory.GetFiles(gameLocation + @"/rltiles/mon", "*.png*", SearchOption.AllDirectories);
+            List<StorageFile> allpngfiles = await GetFilesFromFolderAndSubfolders(Path.Combine(gameLocation, "rltiles", "mon"));
+
             foreach (var file in allpngfiles)
             {
-                FileInfo info = new FileInfo(file);
-                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(file);
-                monsterPNG[info.Name.Replace(".png", "")] = SKBitmap;
+                var buffer = await FileIO.ReadBufferAsync(file);
+                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(buffer.AsStream());
+                monsterPNG[file.Name.Replace(".png", "")] = SKBitmap;
             }
 
             return monsterPNG;
         }
 
-        public Dictionary<string, SkiaSharp.SKBitmap> GetWeaponPNG(string gameLocation)
+        public async Task<Dictionary<string, SkiaSharp.SKBitmap>> GetWeaponPNG(string gameLocation)
         {
             var GetWeaponPNG = new Dictionary<string, SkiaSharp.SKBitmap>();
 
-            List<string> allpngfiles = Directory
-                .GetFiles(gameLocation + @"/rltiles/player/hand1", "*.png*", SearchOption.AllDirectories).ToList();
-            allpngfiles.AddRange(Directory.GetFiles(gameLocation + @"/rltiles/player/transform", "*.png*",
-                SearchOption.AllDirectories).ToList());
+            List<StorageFile> allpngfiles = await GetFilesFromFolderAndSubfolders(Path.Combine(gameLocation, "rltiles", "player", "hand1"));
+            allpngfiles.AddRange(await GetFilesFromFolderAndSubfolders(Path.Combine(gameLocation, "rltiles", "player", "transform")));
+           
             foreach (var file in allpngfiles)
             {
-                FileInfo info = new FileInfo(file);
-                SkiaSharp.SKBitmap SKBitmap = SKBitmap.Decode(file);
+                var buffer = await FileIO.ReadBufferAsync(file);
+                SkiaSharp.SKBitmap SKBitmap = SkiaSharp.SKBitmap.Decode(buffer.AsStream());
 
-
-                GetWeaponPNG[info.Name.Replace(".png", "")] = SKBitmap;
+                GetWeaponPNG[file.Name.Replace(".png", "")] = SKBitmap;
             }
 
             return GetWeaponPNG;
