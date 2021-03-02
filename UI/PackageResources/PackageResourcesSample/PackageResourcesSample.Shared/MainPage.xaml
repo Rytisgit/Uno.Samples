@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="using:SkiaSharp.Views.UWP"
+    xmlns:sample="using:PackageResourcesSample"
+
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -18,5 +20,14 @@
             <Button Content="Load" Click="Button_Click"/>
 		</StackPanel>
 		<TextBlock Grid.Row="1" x:Name="output"/>
-	</Grid>
+
+       
+                <!--  the samples canvas  -->
+        <Grid Tapped="OnSampleTapped" Background="White" Name="splitView" Margin="0,24,0,10" Grid.Row="1">
+                    <views:SKXamlCanvas x:Name="canvas" Grid.Row="1" PaintSurface="OnPaintCanvas" />
+                    <views:SKSwapChainPanel x:Name="glview" Grid.Row="1" PaintSurface="OnPaintGL" Visibility="Collapsed" />
+                </Grid>
+
+
+    </Grid>
 </Page>
