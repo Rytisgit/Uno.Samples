@@ -12,7 +12,7 @@ using FrameGenerator.FileReading;
 using FrameGenerator.Models;
 using SkiaSharp;
 
-namespace PackageResourcesSample.Shared
+namespace PackageResourcesSample
 {
     class UnoFileReader : IReadFromFileAsync
     {

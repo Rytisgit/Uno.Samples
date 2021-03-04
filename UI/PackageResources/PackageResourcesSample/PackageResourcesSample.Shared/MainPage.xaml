@@ -6,17 +6,28 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="using:SkiaSharp.Views.UWP"
-    mc:Ignorable="d">
+    xmlns:sample="using:PackageResourcesSample"
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto" />
-			<RowDefinition />
-		</Grid.RowDefinitions>
-		<StackPanel>
-			<TextBox Header="Package asset file name" Text="ms-appx:///Assets/MyPackageAsset.txt" x:Name="assetFileName" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBox Header="Package asset file name" Text="ms-appx:///Assets/MyPackageAsset.txt" x:Name="assetFileName" />
             <Button Content="Load" Click="Button_Click"/>
-		</StackPanel>
-		<TextBlock Grid.Row="1" x:Name="output"/>
-	</Grid>
+        </StackPanel>
+        <TextBlock Grid.Row="1" x:Name="output"/>
+
+
+        <!--  the samples canvas  -->
+        <Grid Tapped="OnSampleTapped" Background="White" Name="splitView" Margin="0,24,0,10" Grid.Row="1">
+            <Image x:Name="myImage" HorizontalAlignment="Left" Height="859" Margin="10,0,0,0" VerticalAlignment="Center" Width="1490">
+            </Image>
+        </Grid>
+
+
+    </Grid>
 </Page>

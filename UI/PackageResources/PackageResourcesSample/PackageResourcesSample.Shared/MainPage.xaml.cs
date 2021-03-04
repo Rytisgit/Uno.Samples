@@ -5,24 +5,21 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
-using Windows.Storage.Search;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using FrameGenerator;
-using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
-using PackageResourcesSample.Shared;
 using SkiaSharp;
+using SkiaSharp.Views.UWP;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,11 +30,94 @@ namespace PackageResourcesSample
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private CancellationTokenSource cancellations;
+        private IList<SampleBase> samples;
+        private SampleBase sample;
         public MainPage()
         {
-            this.InitializeComponent();
-
+            InitializeComponent();
+            samples = SamplesManager.GetSamples().ToList();
+            SamplesInitializer.Init();
             var o = new ToggleSwitch { FlowDirection = FlowDirection.RightToLeft };
+            SetSample(samples.First());
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            cancellations?.Cancel();
+            cancellations = null;
+        }
+
+        private void OnSampleSelected(object sender, SelectionChangedEventArgs e)
+        {
+            var sample = e.AddedItems?.FirstOrDefault() as SampleBase;
+            SetSample(sample);
+        }
+        private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e)
+        {
+            OnPaintSurface(e.Surface.Canvas, e.Info.Width, e.Info.Height);
+        }
+
+        private void OnPaintGL(object sender, SKPaintGLSurfaceEventArgs e)
+        {
+            OnPaintSurface(e.Surface.Canvas, e.BackendRenderTarget.Width, e.BackendRenderTarget.Height);
+        }
+
+        private void SetSample(SampleBase newSample)
+        {
+            // clean up the old sample
+            if (sample != null)
+            {
+                sample.RefreshRequested -= OnRefreshRequested;
+                sample.Destroy();
+            }
+
+            sample = newSample;
+
+            var runtimeMode = string.Empty;
+#if __WASM__
+            runtimeMode = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE");
+            if (runtimeMode.Equals("Interpreter", StringComparison.InvariantCultureIgnoreCase))
+                runtimeMode = " (Interpreted)";
+            else if (runtimeMode.Equals("FullAOT", StringComparison.InvariantCultureIgnoreCase))
+                runtimeMode = " (AOT)";
+            else if (runtimeMode.Equals("InterpreterAndAOT", StringComparison.InvariantCultureIgnoreCase))
+                runtimeMode = " (Mixed)";
+#endif
+
+            // set the title
+            //titleBar.Text = (sample?.Title ?? $"SkiaSharp for Uno Platform") + runtimeMode;
+
+            // prepare the sample
+            if (sample != null)
+            {
+                sample.RefreshRequested += OnRefreshRequested;
+                sample.Init();
+            }
+
+            // refresh the view
+            OnRefreshRequested(null, null);
+        }
+        private void OnRefreshRequested(object sender, EventArgs e)
+        {
+            
+
+            //if (canvas.Visibility == Visibility.Visible)
+            //    canvas.Invalidate();
+            //if (glview.Visibility == Visibility.Visible)
+            //    glview.Invalidate();
+        }
+
+        private void OnPaintSurface(SKCanvas canvas, int width, int height)
+        {
+            sample?.DrawSample(canvas, width, height);
+        }
+
+        private void OnSampleTapped(object sender, TappedRoutedEventArgs e)
+        {
+            sample?.Tap();
         }
 
         public async Task LoadPackageFile()
@@ -52,7 +132,18 @@ namespace PackageResourcesSample
 
                 var generator = new MainGenerator(new UnoFileReader(), 69);
                 await generator.InitialiseGenerator();
-                output.Text = $"{generator.GenerateImage(null).Height}";
+                var skBitmap = generator.GenerateImage(null);
+                output.Text = $"{skBitmap.Height}";
+
+
+                WriteableBitmap wbNewHospitalized = new WriteableBitmap(skBitmap.Width, skBitmap.Height);
+                using (Stream stream = wbNewHospitalized.PixelBuffer.AsStream())
+                {
+                    //write to bitmap
+                    await stream.WriteAsync(skBitmap.Bytes, 0, skBitmap.Bytes.Length).ConfigureAwait(false);
+                }
+
+                myImage.Source = wbNewHospitalized;
             }
             catch (Exception e)
             {
