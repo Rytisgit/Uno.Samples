@@ -17,15 +17,21 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <TextBox Header="Package asset file name" Text="ms-appx:///Assets/MyPackageAsset.txt" x:Name="assetFileName" />
-            <Button Content="Load" Click="Button_Click"/>
+            <RelativePanel>
+                <Button Content="Do It" Click="Button_Click"/>
+                <Button Content="beige" Click="Button_Click2" Margin="100,0,0,0"/>
+                <Button Content="loop with delay" Click="Button_Click3" Margin="230,0,0,0"/>
+                <TextBox Text="100" x:Name="speed" Margin="350,0,0,0" />
+                <Button Content="load Zip" Click="LoadPackageFile" Margin="500,0,0,0"/>
+            </RelativePanel>
+            
         </StackPanel>
         <TextBlock Grid.Row="1" x:Name="output"/>
 
 
         <!--  the samples canvas  -->
-        <Grid Tapped="OnSampleTapped" Background="White" Name="splitView" Margin="0,24,0,10" Grid.Row="1">
-            <Image x:Name="myImage" HorizontalAlignment="Left" Height="859" Margin="10,0,0,0" VerticalAlignment="Center" Width="1490">
-            </Image>
+        <Grid Tapped="OnSampleTapped" Background="Black" Name="splitView" Margin="0,24,0,10" Grid.Row="1">
+            <Image x:Name="myImage" HorizontalAlignment="Center" Margin="5,0,5,0" VerticalAlignment="Top"/>
         </Grid>
 
 

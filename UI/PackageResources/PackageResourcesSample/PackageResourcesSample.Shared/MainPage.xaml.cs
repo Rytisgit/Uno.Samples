@@ -33,12 +33,15 @@ namespace PackageResourcesSample
         private CancellationTokenSource cancellations;
         private IList<SampleBase> samples;
         private SampleBase sample;
+        private MainGenerator generator;
         public MainPage()
         {
             InitializeComponent();
             samples = SamplesManager.GetSamples().ToList();
             SamplesInitializer.Init();
             var o = new ToggleSwitch { FlowDirection = FlowDirection.RightToLeft };
+
+            generator = new MainGenerator(new UnoFileReader(), 69);
             SetSample(samples.First());
         }
 
@@ -120,38 +123,85 @@ namespace PackageResourcesSample
             sample?.Tap();
         }
 
-        public async Task LoadPackageFile()
+        public async void LoadPackageFile(object sender, RoutedEventArgs e)
         {
             try
             {
-                //var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri(assetFileName.Text));
-                //var bytes = await FileIO.ReadBufferAsync(file);
-                //var stream = bytes.AsStream();
-                //await ExtractExtraFileFolder(stream);
-                //output.Text = await FileIO.ReadTextAsync(file);
+                var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri(assetFileName.Text));
+                var bytes = await FileIO.ReadBufferAsync(file);
+                var stream = bytes.AsStream();
+                await ExtractExtraFileFolder(stream);
+                output.Text = await FileIO.ReadTextAsync(file);
 
-                var generator = new MainGenerator(new UnoFileReader(), 69);
+            }
+            catch (Exception ex)
+            {
+                output.Text = ex.ToString();
+            }
+        }
+
+        public async Task LoadDCSSImage()
+        {
+
                 await generator.InitialiseGenerator();
                 var skBitmap = generator.GenerateImage(null);
-                output.Text = $"{skBitmap.Height}";
+                output.Text = $"{skBitmap.Height}, {skBitmap.Width}";
 
+                var bitmapSource = new WriteableBitmap(1602, 768);
 
-                WriteableBitmap wbNewHospitalized = new WriteableBitmap(skBitmap.Width, skBitmap.Height);
-                using (Stream stream = wbNewHospitalized.PixelBuffer.AsStream())
+                using (Stream stream = bitmapSource.PixelBuffer.AsStream())
                 {
                     //write to bitmap
                     await stream.WriteAsync(skBitmap.Bytes, 0, skBitmap.Bytes.Length).ConfigureAwait(false);
                 }
+                myImage.Source = bitmapSource;
 
-                myImage.Source = wbNewHospitalized;
-            }
-            catch (Exception e)
-            {
-                output.Text = e.ToString();
-            }
         }
 
-        
+
+
+        public async Task WriteAnotherImage()
+        {
+            var skBitmap = new SKBitmap(new SKImageInfo(1602, 768));
+            using (var canvas = new SKCanvas(skBitmap))
+            {
+                canvas.Clear(SKColors.Red);
+            }
+
+            output.Text = $"switch";
+
+            var bitmapSource = new WriteableBitmap(1602, 768);
+            using (Stream stream = bitmapSource.PixelBuffer.AsStream())
+            {
+                //write to bitmap
+                await stream.WriteAsync(skBitmap.Bytes, 0, skBitmap.Bytes.Length).ConfigureAwait(false);
+            }
+            myImage.Source = bitmapSource;
+
+        }
+
+
+        public async Task StartImageLoop()
+        {
+            var side = false;
+            while (int.Parse(speed.Text) >= 0)
+            {
+                
+                if (side)
+                {
+                    await LoadDCSSImage();
+                }
+                else
+                {
+                    await WriteAnotherImage();
+                }
+
+                side = !side;
+                await Task.Delay(int.Parse(speed.Text));
+            }
+            
+        }
+
 
         private async Task ExtractExtraFileFolder(Stream stream)
         {
@@ -226,7 +276,15 @@ namespace PackageResourcesSample
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            await LoadPackageFile();
+            await LoadDCSSImage();
+        }
+        private async void Button_Click2(object sender, RoutedEventArgs e)
+        {
+            await WriteAnotherImage();
+        }
+        private async void Button_Click3(object sender, RoutedEventArgs e)
+        {
+            await StartImageLoop();
         }
     }
 }
