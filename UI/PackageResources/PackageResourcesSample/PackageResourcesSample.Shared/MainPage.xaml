@@ -18,11 +18,18 @@
         <StackPanel>
             <TextBox Header="Package asset file name" Text="ms-appx:///Assets/MyPackageAsset.txt" x:Name="assetFileName" />
             <RelativePanel>
-                <Button Content="Do It" Click="Button_Click"/>
-                <Button Content="beige" Click="Button_Click2" Margin="100,0,0,0"/>
-                <Button Content="loop with delay" Click="Button_Click3" Margin="230,0,0,0"/>
-                <TextBox Text="100" x:Name="speed" Margin="350,0,0,0" />
-                <Button Content="load Zip" Click="LoadPackageFile" Margin="500,0,0,0"/>
+
+                <Button Content="load hex color" Click="Button_Click2" Margin="100,0,0,0"/>
+
+                <TextBox Text="ffffff" x:Name="color" Margin="350,0,0,0" />
+                <TextBox Text="ffffff" x:Name="colorr" Margin="1000,0,0,0" />
+                <TextBox Text="ffffff" x:Name="colorg" Margin="1050,0,0,0" />
+                <TextBox Text="ffffff" x:Name="colorb" Margin="1100,0,0,0" />
+                <Button Content="load rgb" Click="Button_Click_rgb" Margin="500,0,0,0" />
+                <Button Content="load rgba" Click="Button_Click_rgba" Margin="600,0,0,0" />
+                <Button Content="load predef red" Click="Button_Click_red" Margin="700,0,0,0" />
+                <Button Content="load predef green" Click="Button_Click_green" Margin="800,0,0,0" />
+
             </RelativePanel>
             
         </StackPanel>

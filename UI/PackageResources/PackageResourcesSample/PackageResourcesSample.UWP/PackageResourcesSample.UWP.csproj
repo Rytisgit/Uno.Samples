@@ -155,12 +155,6 @@
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\DCSSReplay\FrameGenerator\FrameGenerator.csproj">
-      <Project>{35fb4157-e6e9-45e0-b0ce-92b02be3236d}</Project>
-      <Name>FrameGenerator</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="PuttySharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
   </ItemGroup>
   <Import Project="..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems" Label="Shared" Condition="Exists('..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems')" />

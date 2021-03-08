@@ -56,8 +56,5 @@
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.3.4" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.3.4" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\DCSSReplay\FrameGenerator\FrameGenerator.csproj" />
-  </ItemGroup>
   <Import Project="..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems" Label="Shared" Condition="Exists('..\PackageResourcesSample.Shared\PackageResourcesSample.Shared.projitems')" />
 </Project>
