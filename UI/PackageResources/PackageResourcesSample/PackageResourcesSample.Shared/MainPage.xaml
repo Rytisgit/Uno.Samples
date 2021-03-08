@@ -22,13 +22,14 @@
                 <Button Content="load hex color" Click="Button_Click2" Margin="100,0,0,0"/>
 
                 <TextBox Text="ffffff" x:Name="color" Margin="350,0,0,0" />
-                <TextBox Text="ffffff" x:Name="colorr" Margin="1000,0,0,0" />
-                <TextBox Text="ffffff" x:Name="colorg" Margin="1050,0,0,0" />
-                <TextBox Text="ffffff" x:Name="colorb" Margin="1100,0,0,0" />
+                <TextBox Text="0" x:Name="colorr" Margin="1000,0,0,0" />
+                <TextBox Text="0" x:Name="colorg" Margin="1050,0,0,0" />
+                <TextBox Text="0" x:Name="colorb" Margin="1100,0,0,0" />
                 <Button Content="load rgb" Click="Button_Click_rgb" Margin="500,0,0,0" />
                 <Button Content="load rgba" Click="Button_Click_rgba" Margin="600,0,0,0" />
-                <Button Content="load predef red" Click="Button_Click_red" Margin="700,0,0,0" />
-                <Button Content="load predef green" Click="Button_Click_green" Margin="800,0,0,0" />
+                <Button Content="load red" Click="Button_Click_red" Margin="700,0,0,0" />
+                <Button Content="load green" Click="Button_Click_green" Margin="775,0,0,0" />
+                <Button Content="load blue" Click="Button_Click_blue" Margin="870,0,0,0" />
 
             </RelativePanel>
             
@@ -37,7 +38,7 @@
 
 
         <!--  the samples canvas  -->
-        <Grid Tapped="OnSampleTapped" Background="Black" Name="splitView" Margin="0,24,0,10" Grid.Row="1">
+        <Grid  Background="Black" Name="splitView" Margin="0,24,0,10" Grid.Row="1">
             <Image x:Name="myImage" HorizontalAlignment="Center" Margin="5,0,5,0" VerticalAlignment="Top"/>
         </Grid>
 

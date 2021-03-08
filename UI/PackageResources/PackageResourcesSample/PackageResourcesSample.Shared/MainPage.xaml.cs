@@ -30,15 +30,10 @@ namespace PackageResourcesSample
     public sealed partial class MainPage : Page
     {
         private CancellationTokenSource cancellations;
-        private IList<SampleBase> samples;
-        private SampleBase sample;
         public MainPage()
         {
             InitializeComponent();
-            samples = SamplesManager.GetSamples().ToList();
-            SamplesInitializer.Init();
-            var o = new ToggleSwitch { FlowDirection = FlowDirection.RightToLeft };
-            SetSample(samples.First());
+
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -49,75 +44,6 @@ namespace PackageResourcesSample
             cancellations = null;
         }
 
-        private void OnSampleSelected(object sender, SelectionChangedEventArgs e)
-        {
-            var sample = e.AddedItems?.FirstOrDefault() as SampleBase;
-            SetSample(sample);
-        }
-        private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e)
-        {
-            OnPaintSurface(e.Surface.Canvas, e.Info.Width, e.Info.Height);
-        }
-
-        private void OnPaintGL(object sender, SKPaintGLSurfaceEventArgs e)
-        {
-            OnPaintSurface(e.Surface.Canvas, e.BackendRenderTarget.Width, e.BackendRenderTarget.Height);
-        }
-
-        private void SetSample(SampleBase newSample)
-        {
-            // clean up the old sample
-            if (sample != null)
-            {
-                sample.RefreshRequested -= OnRefreshRequested;
-                sample.Destroy();
-            }
-
-            sample = newSample;
-
-            var runtimeMode = string.Empty;
-#if __WASM__
-            runtimeMode = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE");
-            if (runtimeMode.Equals("Interpreter", StringComparison.InvariantCultureIgnoreCase))
-                runtimeMode = " (Interpreted)";
-            else if (runtimeMode.Equals("FullAOT", StringComparison.InvariantCultureIgnoreCase))
-                runtimeMode = " (AOT)";
-            else if (runtimeMode.Equals("InterpreterAndAOT", StringComparison.InvariantCultureIgnoreCase))
-                runtimeMode = " (Mixed)";
-#endif
-
-            // set the title
-            //titleBar.Text = (sample?.Title ?? $"SkiaSharp for Uno Platform") + runtimeMode;
-
-            // prepare the sample
-            if (sample != null)
-            {
-                sample.RefreshRequested += OnRefreshRequested;
-                sample.Init();
-            }
-
-            // refresh the view
-            OnRefreshRequested(null, null);
-        }
-        private void OnRefreshRequested(object sender, EventArgs e)
-        {
-            
-
-            //if (canvas.Visibility == Visibility.Visible)
-            //    canvas.Invalidate();
-            //if (glview.Visibility == Visibility.Visible)
-            //    glview.Invalidate();
-        }
-
-        private void OnPaintSurface(SKCanvas canvas, int width, int height)
-        {
-            sample?.DrawSample(canvas, width, height);
-        }
-
-        private void OnSampleTapped(object sender, TappedRoutedEventArgs e)
-        {
-            sample?.Tap();
-        }
 
 
         public async Task WriteAnotherImage()
@@ -203,6 +129,25 @@ namespace PackageResourcesSample
             }
 
             output.Text = $"loaded, skcolors.green {SKColors.Green.Red}, {SKColors.Green.Green}, {SKColors.Green.Blue}";
+
+            var bitmapSource = new WriteableBitmap(1602, 768);
+            using (Stream stream = bitmapSource.PixelBuffer.AsStream())
+            {
+                //write to bitmap
+                await stream.WriteAsync(skBitmap.Bytes, 0, skBitmap.Bytes.Length).ConfigureAwait(false);
+            }
+            myImage.Source = bitmapSource;
+        }
+
+        private async void Button_Click_blue(object sender, RoutedEventArgs e)
+        {
+            var skBitmap = new SKBitmap(new SKImageInfo(1602, 768));
+            using (var canvas = new SKCanvas(skBitmap))
+            {
+                canvas.Clear(SKColors.Blue);
+            }
+
+            output.Text = $"loaded, skcolors.blue {SKColors.Blue.Red}, {SKColors.Blue.Green}, {SKColors.Blue.Blue}";
 
             var bitmapSource = new WriteableBitmap(1602, 768);
             using (Stream stream = bitmapSource.PixelBuffer.AsStream())

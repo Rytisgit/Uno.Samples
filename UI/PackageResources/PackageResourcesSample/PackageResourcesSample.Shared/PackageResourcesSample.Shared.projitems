@@ -21,10 +21,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\BitmapRender.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\SampleBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\SamplesInitializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\SamplesManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">
@@ -33,10 +29,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Extra.zip" />
     <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\vault.zip" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\wall.zip" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
