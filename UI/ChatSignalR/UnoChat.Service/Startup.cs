@@ -45,12 +45,13 @@ namespace UnoChat.Service
                 app.UseHsts();
             }
 
+            app.UseCors("CorsPolicy");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors("CorsPolicy");
-
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
